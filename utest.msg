@@ -34,3 +34,10 @@ msg check_percent_err
 msg check_percent_ok
   lan english -def
     Passed: %p1s, must be within %p3f6.2%% of %p2f6.2, is off by %p4f6.2%%
+
+msg progged
+  lan english -def
+    PIC %p1s has been programmed successfully.
+msg progging
+  lan english -def
+    Programming %p1s into PIC %p2s.
