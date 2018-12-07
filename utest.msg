@@ -1,5 +1,20 @@
 /*   Messages referenced by the UTEST library.
 /*
+/*   Messages corresponding to completion status codes.
+/*
+msg err1
+  lan english -def
+    Multiple programmers found with name "%p1s".
+msg err2
+  lan english -def
+    Programmer with name "%p1s" was not found.
+msg err2
+  lan english -def
+    Received %p2i bytes, %p1i were required.
+
+
+/*   Messages referenced by name.
+/*
 msg check_delta_err
   lan english -def
     FAILED: %p1s, must be within %p3f6.2 of %p2f6.2, is off by %p4f6.2
