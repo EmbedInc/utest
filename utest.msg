@@ -56,3 +56,13 @@ msg progged
 msg progging
   lan english -def
     Programming %p1s into PIC %p2s.
+
+msg try2done
+  lan english -def
+    Gibberish not allowed.  Just hit ENTER when done.
+msg try3done
+  lan english -def
+    It's really not that hard.  Just hit ENTER when done.
+msg tryabort
+  lan english -def
+    Stop playing with the 'puter and go get mommy to take a look.

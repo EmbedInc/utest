@@ -28,6 +28,7 @@ type
     obuf:                              {serial data port output buffer}
       array[0..utest_ibuf_last] of int8u_t;
     obufn: sys_int_machine_t;          {number of bytes in OBUF}
+    skipped: sys_int_machine_t;        {number of tests that were skipped}
     end;
 {
 ********************************************************************************
@@ -72,7 +73,12 @@ function utest_check_percent (         {check that value is within +-percent}
   :boolean;                            {value is in range}
   val_param; extern;
 
-procedure utest_open (                 {open new use of the UTEST library}
+procedure utest_close (                {end a use of the UTEST library}
+  in out  ut: utest_t;                 {UTEST library use state, returned invalid}
+  out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure utest_open (                 {start new use of the UTEST library}
   in      name: univ string_var_arg_t; {name of the USBProg in the tester}
   out     ut: utest_t;                 {returned library use state}
   out     stat: sys_err_t);            {completion status}
@@ -151,6 +157,32 @@ procedure utest_ser_send32 (           {send 32 bits serial, buffer as much as p
   in out  ut: utest_t;                 {UTEST library use state}
   in      d: sys_int_conv32_t;         {data in low bits, high to low byte order}
   out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure utest_user_message (         {write separator, message, beep}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      msg: string;                 {message name withing subsystem file}
+  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
+  in      nparms: sys_int_machine_t);  {number of parameters in PARMS}
+  val_param; extern;
+
+function utest_user_message_wait (     {write message, wait for user to hit ENTER}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      msg: string;                 {message name withing subsystem file}
+  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
+  in      nparms: sys_int_machine_t)   {number of parameters in PARMS}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param; extern;
+
+procedure utest_user_msg (             {default message file, no parameters}
+  in      msg: string);                {message name withing subsystem file}
+  val_param; extern;
+
+function utest_user_msg_wait (         {message, wait for user, defaulf msg file}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      msg: string)                 {message name withing subsystem file}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
   val_param; extern;
 
 procedure utest_wait (                 {wait a minimum time, performed in programmer}

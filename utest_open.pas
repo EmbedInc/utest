@@ -81,6 +81,7 @@ begin
   ut.ibufn := 0;                       {init serial data input buffer to empty}
   ut.ibufrd := 0;
   ut.obufn := 0;                       {init serial data output buffer to empty}
+  ut.skipped := 0;                     {init to no tests skipped}
 {
 *   Initialize the tester.
 }
@@ -90,4 +91,19 @@ leave:                                 {common exit point, STAT all set}
   if devs_open then begin
     picprg_list_del (devs);            {deallocate programmer devices list}
     end;
+  end;
+{
+********************************************************************************
+*
+*   Subroutine UTEST_CLOSE (UT, STAT)
+*
+*   End a use of the UTEST library.
+}
+procedure utest_close (                {end a use of the UTEST library}
+  in out  ut: utest_t;                 {UTEST library use state, returned invalid}
+  out     stat: sys_err_t);            {completion status}
+  val_param;
+
+begin
+  picprg_close (ut.pr, stat);
   end;

@@ -2,4 +2,5 @@ utest_check.obj
 utest_open.obj
 utest_prog.obj
 utest_ser.obj
+utest_user.obj
 utest_util.obj
