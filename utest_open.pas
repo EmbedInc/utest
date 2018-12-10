@@ -31,9 +31,10 @@ var
   dev_p: picprg_dev_p_t;               {points to current PIC programmers list entry}
   tester_p: picprg_dev_p_t;            {points to tester device in list}
   devs_open: boolean;                  {DEVS list is allocated}
+  stat2: sys_err_t;                    {to avoid corrupting STAT}
 
 label
-  leave;
+  leave, abort1;
 
 begin
   devs_open := false;                  {init to programmer devices list not allocated}
@@ -75,6 +76,9 @@ begin
 
   picprg_open (ut.pr, stat);           {open connection to the specified programmer}
   if sys_error(stat) then goto leave;
+
+  picprg_cmdw_off (ut.pr, stat);       {make sure programming lines start high impedance}
+  if sys_error(stat) then goto abort1;
 {
 *   Initialize the rest of the UTEST library use state.
 }
@@ -86,11 +90,18 @@ begin
 *   Initialize the tester.
 }
   utest_ser_recv_flush (ut, stat);     {flush any previously received serial data}
+  if sys_error(stat) then goto abort1;
 
 leave:                                 {common exit point, STAT all set}
   if devs_open then begin
     picprg_list_del (devs);            {deallocate programmer devices list}
     end;
+{
+*   Error exit.  STAT is already set.
+}
+abort1:                                {PICPRG open}
+  picprg_close (ut.pr, stat2);
+  goto leave;
   end;
 {
 ********************************************************************************
@@ -105,5 +116,6 @@ procedure utest_close (                {end a use of the UTEST library}
   val_param;
 
 begin
-  picprg_close (ut.pr, stat);
+  picprg_cmdw_off (ut.pr, stat);       {all programming lines to high impedance}
+  picprg_close (ut.pr, stat);          {end use of the PICPRG library}
   end;

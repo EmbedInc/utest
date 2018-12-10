@@ -50,6 +50,10 @@ msg check_percent_ok
   lan english -def
     Passed: %p1s, must be within %p3f6.2%% of %p2f6.2, is off by %p4f6.2%%
 
+msg datetime
+  lan english -def
+    Program %p1s, built on %p2s.
+
 msg progged
   lan english -def
     PIC %p1s has been programmed successfully.

@@ -35,6 +35,9 @@ type
 *
 *   Entry points.
 }
+procedure utest_announce;              {write program info to standard output}
+  val_param; extern;
+
 function utest_check_above (           {check for value at or above some level}
   in      name: string;                {name of the value, for message}
   in      val: real;                   {the value to test}
