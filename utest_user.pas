@@ -101,7 +101,7 @@ retry:
     pick);
   case pick of
 1:  begin                              {Q  -  quit the program}
-      utest_close (ut, stat);          {try to shut down cleanly}
+      utest_lib_close (ut, stat);      {try to shut down cleanly}
       sys_bomb;
       end;
 2:  begin                              {S  -  skip this step}

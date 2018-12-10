@@ -1,12 +1,13 @@
-{   Routines to start and end uses of the UTEST library.
+{   High level UTEST library management.
 }
 module utest_open;
-define utest_open;
+define utest_lib_open;
+define utest_lib_close;
 %include 'utest2.ins.pas';
 {
 ********************************************************************************
 *
-*   Subroutine UTEST_OPEN (NAME, UT, STAT)
+*   Subroutine UTEST_LIB_OPEN (NAME, UT, STAT)
 *
 *   Start a new use of the UTEST library and connect to the tester.  The tester
 *   is a Embed USBProg.  It may have additional hardware connected to it via the
@@ -20,7 +21,7 @@ define utest_open;
 *   reports no error.  On failure, STAT will indicate error, and the state of
 *   UT is indefined, except that no system resources will be allocated to it.
 }
-procedure utest_open (                 {open new use of the UTEST library}
+procedure utest_lib_open (             {start a new use of the UTEST library}
   in      name: univ string_var_arg_t; {name of the USBProg in the tester}
   out     ut: utest_t;                 {returned library use state}
   out     stat: sys_err_t);            {completion status}
@@ -106,11 +107,11 @@ abort1:                                {PICPRG open}
 {
 ********************************************************************************
 *
-*   Subroutine UTEST_CLOSE (UT, STAT)
+*   Subroutine UTEST_LIB_CLOSE (UT, STAT)
 *
 *   End a use of the UTEST library.
 }
-procedure utest_close (                {end a use of the UTEST library}
+procedure utest_lib_close (            {end a use of the UTEST library}
   in out  ut: utest_t;                 {UTEST library use state, returned invalid}
   out     stat: sys_err_t);            {completion status}
   val_param;

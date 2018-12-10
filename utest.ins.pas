@@ -76,12 +76,12 @@ function utest_check_percent (         {check that value is within +-percent}
   :boolean;                            {value is in range}
   val_param; extern;
 
-procedure utest_close (                {end a use of the UTEST library}
+procedure utest_lib_close (            {end a use of the UTEST library}
   in out  ut: utest_t;                 {UTEST library use state, returned invalid}
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
-procedure utest_open (                 {start new use of the UTEST library}
+procedure utest_lib_open (             {start a new use of the UTEST library}
   in      name: univ string_var_arg_t; {name of the USBProg in the tester}
   out     ut: utest_t;                 {returned library use state}
   out     stat: sys_err_t);            {completion status}
