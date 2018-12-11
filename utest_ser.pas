@@ -4,8 +4,11 @@
 module utest_ser;
 define utest_ser_send;
 define utest_ser_send8;
+define utest_ser_send8s;
 define utest_ser_send16;
+define utest_ser_send16s;
 define utest_ser_send24;
+define utest_ser_send24s;
 define utest_ser_send32;
 define utest_ser_recv;
 define utest_ser_recv_flush;
@@ -226,6 +229,22 @@ begin
     ;
   end;
 {
+********************
+}
+function utest_ser_get8s (             {get next 8 bit signed value from receive buffer}
+  in out  ut: utest_t)                 {UTEST library use state}
+  :sys_int_machine_t;                  {byte value, 0 when not byte available}
+  val_param;
+
+var
+  ii: sys_int_machine_t;
+
+begin
+  ii := utest_ser_get8 (ut);
+  if ii >= 16#80 then ii := ii - 16#100;
+  utest_ser_get8s := ii;
+  end;
+{
 ********************************************************************************
 *
 *   Functions for getting various multi-byte values over the serial data port.
@@ -250,6 +269,22 @@ begin
 {
 ********************
 }
+function utest_ser_get16s (            {get next 16 bit signed value from receive buffer}
+  in out  ut: utest_t)                 {UTEST library use state}
+  :sys_int_machine_t;                  {16 bit value, high to low byte order from buff}
+  val_param;
+
+var
+  ii: sys_int_machine_t;
+
+begin
+  ii := utest_ser_get16 (ut);
+  if ii >= 16#8000 then ii := ii - 16#10000;
+  utest_ser_get16s := ii;
+  end;
+{
+********************
+}
 function utest_ser_get24 (             {get next 24 bit value from receive buffer}
   in out  ut: utest_t)                 {UTEST library use state}
   :sys_int_machine_t;                  {24 bit value, high to low byte order from buff}
@@ -263,6 +298,22 @@ begin
   ii := lshft(ii, 8) ! utest_ser_get8 (ut);
   ii := lshft(ii, 8) ! utest_ser_get8 (ut);
   utest_ser_get24 := ii;
+  end;
+{
+********************
+}
+function utest_ser_get24s (            {get next 24 bit signed value from receive buffer}
+  in out  ut: utest_t)                 {UTEST library use state}
+  :sys_int_machine_t;                  {24 bit value, high to low byte order from buff}
+  val_param;
+
+var
+  ii: sys_int_machine_t;
+
+begin
+  ii := utest_ser_get24 (ut);
+  if ii >= 16#800000 then ii := ii - 16#1000000;
+  utest_ser_get24s := ii;
   end;
 {
 ********************

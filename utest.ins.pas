@@ -96,17 +96,32 @@ procedure utest_prog (                 {program data into a target PIC}
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
-function utest_ser_get8 (              {get next 8 bit value from receive buffer}
+function utest_ser_get8 (              {get next 8 bit unsigned value from receive buffer}
   in out  ut: utest_t)                 {UTEST library use state}
   :sys_int_machine_t;                  {byte value, 0 when not byte available}
   val_param; extern;
 
-function utest_ser_get16 (             {get next 16 bit value from receive buffer}
+function utest_ser_get8s (             {get next 8 bit signed value from receive buffer}
+  in out  ut: utest_t)                 {UTEST library use state}
+  :sys_int_machine_t;                  {byte value, 0 when not byte available}
+  val_param; extern;
+
+function utest_ser_get16 (             {get next 16 bit unsigned value from receive buffer}
   in out  ut: utest_t)                 {UTEST library use state}
   :sys_int_machine_t;                  {16 bit value, high to low byte order from buff}
   val_param; extern;
 
-function utest_ser_get24 (             {get next 24 bit value from receive buffer}
+function utest_ser_get16s (            {get next 16 bit signed value from receive buffer}
+  in out  ut: utest_t)                 {UTEST library use state}
+  :sys_int_machine_t;                  {16 bit value, high to low byte order from buff}
+  val_param; extern;
+
+function utest_ser_get24 (             {get next 24 bit unsigned value from receive buffer}
+  in out  ut: utest_t)                 {UTEST library use state}
+  :sys_int_machine_t;                  {24 bit value, high to low byte order from buff}
+  val_param; extern;
+
+function utest_ser_get24s (            {get next 24 bit signed value from receive buffer}
   in out  ut: utest_t)                 {UTEST library use state}
   :sys_int_machine_t;                  {24 bit value, high to low byte order from buff}
   val_param; extern;
