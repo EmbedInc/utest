@@ -14,8 +14,11 @@ define utest_ser_recv;
 define utest_ser_recv_flush;
 define utest_ser_nrecv;
 define utest_ser_get8;
+define utest_ser_get8s;
 define utest_ser_get16;
+define utest_ser_get16s;
 define utest_ser_get24;
+define utest_ser_get24s;
 define utest_ser_get32;
 %include 'utest2.ins.pas';
 {
@@ -140,7 +143,7 @@ begin
 *   The local serial data port input buffer is reset to empty before any bytes
 *   are received.  Any bytes in the input buffer when this routine is called are
 *   lost.  Note that UTEST_SER_NRECV can be used at any time to get the number
-*   of bytes in the input buffer at any time.
+*   of bytes in the input buffer.
 }
 procedure utest_ser_recv (             {receive serial data into internal buffer}
   in out  ut: utest_t;                 {UTEST library use state}
@@ -163,10 +166,10 @@ begin
   if sys_error(stat) then return;
 
   if n = 0 then return;                {any number of bytes is allowed ?}
-  if ut.ibufrd <> n then begin         {didn't get the required number of bytes ?}
+  if ut.ibufn <> n then begin          {didn't get the required number of bytes ?}
     sys_stat_set (utest_subsys_k, utest_stat_notnbytes_k, stat);
     sys_stat_parm_int (n, stat);
-    sys_stat_parm_int (ut.ibufrd, stat);
+    sys_stat_parm_int (ut.ibufn, stat);
     end;
   end;
 {

@@ -98,7 +98,7 @@ procedure utest_prog (                 {program data into a target PIC}
 
 function utest_ser_get8 (              {get next 8 bit unsigned value from receive buffer}
   in out  ut: utest_t)                 {UTEST library use state}
-  :sys_int_machine_t;                  {byte value, 0 when not byte available}
+  :sys_int_machine_t;                  {byte value, 0 when no byte available}
   val_param; extern;
 
 function utest_ser_get8s (             {get next 8 bit signed value from receive buffer}
@@ -194,7 +194,7 @@ function utest_user_message_wait (     {write message, wait for user to hit ENTE
   val_param; extern;
 
 procedure utest_user_msg (             {default message file, no parameters}
-  in      msg: string);                {message name withing subsystem file}
+  in      msg: string);                {message name within subsystem file}
   val_param; extern;
 
 function utest_user_msg_wait (         {message, wait for user, defaulf msg file}

@@ -97,6 +97,7 @@ leave:                                 {common exit point, STAT all set}
   if devs_open then begin
     picprg_list_del (devs);            {deallocate programmer devices list}
     end;
+  return;
 {
 *   Error exit.  STAT is already set.
 }

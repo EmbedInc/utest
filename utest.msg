@@ -8,7 +8,7 @@ msg err1
 msg err2
   lan english -def
     Programmer with name "%p1s" was not found.
-msg err2
+msg err3
   lan english -def
     Received %p2i bytes, %p1i were required.
 
