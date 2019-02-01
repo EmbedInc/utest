@@ -35,7 +35,8 @@ type
 *
 *   Entry points.
 }
-procedure utest_announce;              {write program info to standard output}
+procedure utest_announce (             {write program info to standard output}
+  in      dtm: string);                {program build date/time string}
   val_param; extern;
 
 function utest_check_above (           {check for value at or above some level}
@@ -177,17 +178,42 @@ procedure utest_ser_send32 (           {send 32 bits serial, buffer as much as p
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
+procedure utest_user_make_prompt (     {make prompt string from msg references}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
+  in out  prompt: univ string_var_arg_t); {returned prompts string}
+  val_param; extern;
+
 procedure utest_user_message (         {write separator, message, beep}
   in      subsys: string;              {name of subsystem, used to find message file}
-  in      msg: string;                 {message name withing subsystem file}
+  in      msg: string;                 {message name within subsystem file}
   in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
   in      nparms: sys_int_machine_t);  {number of parameters in PARMS}
+  val_param; extern;
+
+procedure utest_user_message_keyw (    {write message, get response keyword}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      msg: string;                 {message name within subsystem file}
+  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
+  in      nparms: sys_int_machine_t;   {number of parameters in PARMS}
+  in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
+  in      keyws: string;               {keyw choices, blank separate, upper case}
+  out     pick: sys_int_machine_t);    {1-N number of chosen keyword}
+  val_param; extern;
+
+procedure utest_user_message_resp (    {message, prompt, get response}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      msg: string;                 {message name within subsystem file}
+  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
+  in      nparms: sys_int_machine_t;   {number of parameters in PARMS}
+  in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
+  in out  resp: univ string_var_arg_t); {returned response from the user}
   val_param; extern;
 
 function utest_user_message_wait (     {write message, wait for user to hit ENTER}
   in out  ut: utest_t;                 {UTEST library use state}
   in      subsys: string;              {name of subsystem, used to find message file}
-  in      msg: string;                 {message name withing subsystem file}
+  in      msg: string;                 {message name within subsystem file}
   in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
   in      nparms: sys_int_machine_t)   {number of parameters in PARMS}
   :boolean;                            {TRUE confirmed normally, FALSE skip}
@@ -199,8 +225,29 @@ procedure utest_user_msg (             {default message file, no parameters}
 
 function utest_user_msg_wait (         {message, wait for user, defaulf msg file}
   in out  ut: utest_t;                 {UTEST library use state}
-  in      msg: string)                 {message name withing subsystem file}
+  in      msg: string)                 {message name within subsystem file}
   :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param; extern;
+
+function utest_user_msg_yes_y (        {message, get yes/no response, default yes}
+  in      msg: string)                 {message name within program's msg file}
+  :boolean;                            {TRUE for yes, FALSE for no}
+  val_param; extern;
+
+function utest_user_msg_yes_n (        {message, get yes/no response, default no}
+  in      msg: string)                 {message name within program's msg file}
+  :boolean;                            {TRUE for yes, FALSE for no}
+  val_param; extern;
+
+function utest_user_msg_yes (          {message, get yes/no response, no default}
+  in      msg: string)                 {message name within program's msg file}
+  :boolean;                            {TRUE for yes, FALSE for no}
+  val_param; extern;
+
+procedure utest_user_prompt_resp (     {write prompt, get response string}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
+  in out  resp: univ string_var_arg_t); {returned response from the user}
   val_param; extern;
 
 procedure utest_wait (                 {wait a minimum time, performed in programmer}

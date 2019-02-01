@@ -11,8 +11,7 @@ msg err2
 msg err3
   lan english -def
     Received %p2i bytes, %p1i were required.
-
-
+/*
 /*   Messages referenced by name.
 /*
 msg check_delta_err
@@ -54,19 +53,45 @@ msg datetime
   lan english -def
     Program %p1s, built on %p2s.
 
+msg nskipped
+  lan english -def
+    %p1i operations were skipped.
+
+msg pass_no
+  lan english -def
+    The unit does NOT PASS the production test.
+msg pass_yes
+  lan english -def
+    .nfill
+    ******************************
+    *  Production tests passed.  *
+    ******************************
 msg progged
   lan english -def
     PIC %p1s has been programmed successfully.
+msg progged_retry
+  lan english -def
+    *** Programming failed.  Try again ***
 msg progging
   lan english -def
     Programming %p1s into PIC %p2s.
 
+msg prompt_yesno
+  lan english -def
+    Y or N>
+msg prompt_yesno_y
+  lan english -def
+    Y or N (def Y)>
+msg prompt_yesno_n
+  lan english -def
+    Y or N (def N)>
+
 msg try2done
   lan english -def
-    Gibberish not allowed.  Just hit ENTER when done.
+    Gibberish not allowed.  Try again.
 msg try3done
   lan english -def
-    It's really not that hard.  Just hit ENTER when done.
+    It's really not that hard.  Try again.
 msg tryabort
   lan english -def
     Stop playing with the 'puter and go get mommy to take a look.

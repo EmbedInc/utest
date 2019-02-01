@@ -6,7 +6,7 @@ define utest_prog;
 {
 ********************************************************************************
 *
-*   Subroutine UTEST_PROG (HEXDIR, FWNAME, VER, PIC, STAT)
+*   Subroutine UTEST_PROG (UT, HEXDIR, FWNAME, VER, PIC, STAT)
 *
 *   Program the data from a HEX file into one PIC.
 *
@@ -110,17 +110,20 @@ begin
     stat);
   if sys_error(stat) then goto abort;
   picprg_tdat_dealloc (tdat_p);        {deallocate TDAT structure}
+  picprg_off (ut.pr, stat);            {turn off programming lines}
+  if sys_error(stat) then goto abort;
 
   writeln;
   sys_msg_parm_vstr (msg_parm[1], picv); {show success}
   sys_message_parms ('utest', 'progged', msg_parm, 1);
+  return;                              {normal return point}
 
-abort:                                 {STAT indicates error, HEX file is open}
+abort:                                 {HEX file may be open, STAT all set}
   if hex_open then begin
     ihex_in_close (ihn, stat2);        {close the HEX file}
     end;
   if tdat_p <> nil then begin
     picprg_tdat_dealloc (tdat_p);      {deallocate TDAT structure}
     end;
-  picprg_off (ut.pr, stat);            {turn off programming lines}
+  picprg_off (ut.pr, stat2);           {turn off programming lines}
   end;

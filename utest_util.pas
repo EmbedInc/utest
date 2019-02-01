@@ -8,11 +8,14 @@ define utest_wait;
 {
 ********************************************************************************
 *
-*   Subroutine UTEST_ANNOUNCE
+*   Subroutine UTEST_ANNOUNCE (DTM)
 *
-*   Write information about this program to standard output.
+*   Write information about this program to standard output.  The DTM string is
+*   usually the BUILD_DTM_STR string in the BUILDDATE.INS.PAS file that is
+*   automatically generated when the calling program is built.
 }
-procedure utest_announce;              {announce this program and its build date/time}
+procedure utest_announce (             {write program info to standard output}
+  in      dtm: string);                {program build date/time string}
   val_param;
 
 const
@@ -31,7 +34,7 @@ begin
   string_upcase (tk1);
   sys_msg_parm_vstr (msg_parm[1], tk1);
 
-  string_vstring (tk2, build_dtm_str, size_char(build_dtm_str)); {get date/time string}
+  string_vstring (tk2, dtm, size_char(dtm)); {get date/time string}
   sys_msg_parm_vstr (msg_parm[2], tk2);
   sys_message_parms ('utest', 'datetime', msg_parm, 2);
   end;
