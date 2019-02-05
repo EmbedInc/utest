@@ -19,6 +19,12 @@ const
   utest_ibuf_last = utest_ibuf_size - 1;
 
 type
+  utest_fw_t = record                  {version info of one firmware}
+    typ: sys_int_machine_t;            {type ID}
+    ver: sys_int_machine_t;            {version number}
+    seq: sys_int_machine_t;            {sequence number}
+    end;
+
   utest_t = record                     {data for one use of this library}
     pr: picprg_t;                      {PICPRG library use state}
     ibuf:                              {serial data port input buffer}
@@ -75,6 +81,23 @@ function utest_check_percent (         {check that value is within +-percent}
   in      nom: real;                   {nominal value (0% error)}
   in      pcent: real)                 {max allowed percent error from nominal}
   :boolean;                            {value is in range}
+  val_param; extern;
+
+procedure utest_fw_name (              {make firmware name from type ID}
+  in      typ: sys_int_machine_t;      {firmware type ID}
+  in out  name: univ string_var_arg_t); {returned name, number string if type not known}
+  val_param; extern;
+
+procedure utest_fw_show (              {show information about one firmware}
+  in      desc: string;                {short description}
+  in      fw: utest_fw_t);             {firmware version info}
+  val_param; extern;
+
+function utest_fw_ver (                {check firmware version, show result}
+  in      fw: utest_fw_t;              {actual firmware info}
+  in      typ: sys_int_machine_t;      {desired type}
+  in      ver: sys_int_machine_t)      {desired version}
+  :boolean;                            {firmware version is correct}
   val_param; extern;
 
 procedure utest_lib_close (            {end a use of the UTEST library}

@@ -1,4 +1,5 @@
 utest_check.obj
+utest_fw.obj
 utest_lib.obj
 utest_prog.obj
 utest_ser.obj

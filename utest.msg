@@ -53,6 +53,28 @@ msg datetime
   lan english -def
     Program %p1s, built on %p2s.
 
+msg fw_vers_bad
+  lan english -def
+    Not all firmware is at the correct version.  Programming is required.
+msg fw_vers_good
+  lan english -def
+    All firmware is at the correct version.
+msg fw_ver_match
+  lan english -def
+    Firmware %p1s is at the correct version.
+msg fw_ver_match_ntyp
+  lan english -def
+    Firmware %p1s is type %p2i, should be %p3i.
+msg fw_ver_match_nver
+  lan english -def
+    Firmware %p1s is at version %p2i, should be version %p3i.
+msg fw_show
+  lan english -def
+    Firmware %p2s ver %p3i seq %p4i (%p1s)
+msg fw_show_unk
+  lan english -def
+    Firmware unknown (%p1s)
+
 msg nskipped
   lan english -def
     %p1i operations were skipped.
