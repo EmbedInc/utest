@@ -123,7 +123,7 @@ begin
 
   sys_msg_parm_str (msg_parm[1], name); {1 - name of value being tested}
   sys_msg_parm_real (msg_parm[2], nom); {2 - nominal value}
-  sys_msg_parm_real (msg_parm[3], val); {3 - allowed delta}
+  sys_msg_parm_real (msg_parm[3], delta); {3 - allowed delta}
   sys_msg_parm_real (msg_parm[4], err); {4 - actual delta}
 
   if abs(err) <= delta
