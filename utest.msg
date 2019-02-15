@@ -98,6 +98,12 @@ msg progging
   lan english -def
     Programming %p1s into PIC %p2s.
 
+msg prompt_cont
+  lan english -def
+    Continue>
+msg prompt_proc
+  lan english -def
+    Proceed>
 msg prompt_yesno
   lan english -def
     Y or N>

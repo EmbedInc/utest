@@ -224,6 +224,16 @@ procedure utest_user_message_keyw (    {write message, get response keyword}
   out     pick: sys_int_machine_t);    {1-N number of chosen keyword}
   val_param; extern;
 
+function utest_user_message_prmt_wait ( {write message, wait for user to hit ENTER}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      msg: string;                 {message name within subsystem file}
+  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
+  in      nparms: sys_int_machine_t;   {number of parameters in PARMS}
+  in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param; extern;
+
 procedure utest_user_message_resp (    {message, prompt, get response}
   in      subsys: string;              {name of subsystem, used to find message file}
   in      msg: string;                 {message name within subsystem file}
@@ -244,6 +254,13 @@ function utest_user_message_wait (     {write message, wait for user to hit ENTE
 
 procedure utest_user_msg (             {default message file, no parameters}
   in      msg: string);                {message name within subsystem file}
+  val_param; extern;
+
+function utest_user_msg_prmt_wait (    {message, wait for user, defaulf msg file}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      msg: string;                 {message name within subsystem file}
+  in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
   val_param; extern;
 
 function utest_user_msg_wait (         {message, wait for user, defaulf msg file}

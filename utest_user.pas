@@ -6,8 +6,10 @@ define utest_user_make_prompt;
 define utest_user_prompt_resp;
 define utest_user_message_resp;
 define utest_user_message_keyw;
+define utest_user_message_prmt_wait;
 define utest_user_message_wait;
 define utest_user_msg;
+define utest_user_msg_prmt_wait;
 define utest_user_msg_wait;
 define utest_user_msg_yes;
 define utest_user_msg_yes_y;
@@ -277,6 +279,68 @@ otherwise
 {
 ********************************************************************************
 *
+*   Function UTEST_USER_MESSAGE_PRMT_WAIT (UT, SUBSYS, MSG, PARMS, NPARMS, PRMSG)
+*
+*   Write the indicated message, then prompt the user to hit ENTER when done.
+*   This routine does not return until the user hits ENTER.
+*
+*   PRMSG specifies the the prompt by referencing a message.  The the
+*   description of subroutine UTEST_USER_MAKE_PROMPT for details of PRMSG.
+*
+*   This routine allows additional "hidden" responses instead of just ENTER (the
+*   empty string):
+*
+*     S
+*
+*       Skip this step.  The function returns FALSE, and the SKIPPED counter is
+*       incremented by 1.
+*
+*     Q
+*
+*       Quit the program.  The program is aborted with error.
+*
+*   The above special keywords are case-insensitive.
+}
+function utest_user_message_prmt_wait ( {write message, wait for user to hit ENTER}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      msg: string;                 {message name within subsystem file}
+  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
+  in      nparms: sys_int_machine_t;   {number of parameters in PARMS}
+  in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param;
+
+var
+  pick: sys_int_machine_t;             {number of keyword picked from the list}
+  stat: sys_err_t;
+
+begin
+  utest_user_message_prmt_wait := true; {init to got normal confirm (empty string)}
+
+  utest_user_message_keyw (            {write message and prompt, expect keyword}
+    subsys, msg, parms, nparms,        {parameters defining the message to write}
+    prmsg,                             {specify the prompt}
+    '"" S Q',                          {keywords allowed}
+    pick);                             {returned 1-N selected keyword number}
+
+  case pick of                         {which keyword was entered ?}
+1:  begin                              {empty string}
+      return;
+      end;
+2:  begin                              {S - skip this step}
+      ut.skipped := ut.skipped +1;     {count one more skipped step}
+      utest_user_message_prmt_wait := false; {indicate skip}
+      return;
+      end;
+otherwise                              {Q (or anything else) - quit}
+    utest_lib_close (ut, stat);        {try to shut down cleanly}
+    sys_bomb;
+    end;                               {end of keyword cases}
+  end;
+{
+********************************************************************************
+*
 *   Function UTEST_USER_MESSAGE_WAIT (UT, SUBSYS, MSG, PARMS, NPARMS)
 *
 *   Write the indicated message, then prompt the user to hit ENTER when done.
@@ -305,32 +369,9 @@ function utest_user_message_wait (     {write message, wait for user to hit ENTE
   :boolean;                            {TRUE confirmed normally, FALSE skip}
   val_param;
 
-var
-  pick: sys_int_machine_t;             {number of keyword picked from the list}
-  stat: sys_err_t;
-
 begin
-  utest_user_message_wait := true;     {init to got normal confirm (empty string)}
-
-  utest_user_message_keyw (            {write message and prompt, expect keyword}
-    subsys, msg, parms, nparms,        {parameters defining the message to write}
-    '',                                {use default prompt}
-    '"" S Q',                          {keywords allowed}
-    pick);                             {returned 1-N selected keyword number}
-
-  case pick of                         {which keyword was entered ?}
-1:  begin                              {empty string}
-      return;
-      end;
-2:  begin                              {S - skip this step}
-      ut.skipped := ut.skipped +1;     {count one more skipped step}
-      utest_user_message_wait := false; {indicate skip}
-      return;
-      end;
-otherwise                              {Q (or anything else) - quit}
-    utest_lib_close (ut, stat);        {try to shut down cleanly}
-    sys_bomb;
-    end;                               {end of keyword cases}
+  utest_user_message_wait := utest_user_message_prmt_wait (
+    ut, subsys, msg, parms, nparms, '');
   end;
 {
 ********************************************************************************
@@ -364,7 +405,26 @@ function utest_user_msg_wait (         {message, wait for user, defaulf msg file
 
 begin
   utest_user_msg_wait :=
-    utest_user_message_wait (ut, '', msg, nil, 0);
+    utest_user_message_prmt_wait (ut, '', msg, nil, 0, '');
+  end;
+{
+********************************************************************************
+*
+*   Function UTEST_USER_MSG_PRMT_WAIT (UT, MSG, PRMSG)
+*
+*   Like UTEST_USER_MESSAGE_PRMT_WAIT, except that the message is in the message
+*   file unique to this program, and no parameters are passed to the message.
+}
+function utest_user_msg_prmt_wait (    {message, wait for user, defaulf msg file}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      msg: string;                 {message name within subsystem file}
+  in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param;
+
+begin
+  utest_user_msg_prmt_wait :=
+    utest_user_message_prmt_wait (ut, '', msg, nil, 0, prmsg);
   end;
 {
 ********************************************************************************
