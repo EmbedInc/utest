@@ -97,7 +97,7 @@ begin
   string_vstring (                     {make var string PRMSG in VPRMSG}
     vprmsg, prmsg, size_char(prmsg));
   p := 1;                              {init parse index}
-  def := true;                         {init to use default vprmsg}
+  def := true;                         {init to use default prompt}
 
   while true do begin                  {try to get prompt message subsys and name}
     string_token (vprmsg, p, psubsys, stat); {get first token into PSUBSYS}
@@ -203,7 +203,7 @@ begin
   utest_user_message (                 {write the message}
     subsys, msg, parms, nparms);
   utest_user_prompt_resp (             {write the prompt and get the response}
-    subsys, prmsg, resp);
+    '', prmsg, resp);
   end;
 {
 ********************************************************************************
