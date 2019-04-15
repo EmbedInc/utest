@@ -35,6 +35,7 @@ type
       array[0..utest_ibuf_last] of int8u_t;
     obufn: sys_int_machine_t;          {number of bytes in OBUF}
     skipped: sys_int_machine_t;        {number of tests that were skipped}
+    open: boolean;                     {PICPRG library state is open}
     end;
 {
 ********************************************************************************
@@ -103,6 +104,10 @@ function utest_fw_ver (                {check firmware version, show result}
 procedure utest_lib_close (            {end a use of the UTEST library}
   in out  ut: utest_t;                 {UTEST library use state, returned invalid}
   out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure utest_lib_init (             {make UTEST lib state valid, but don't open}
+  in out  ut: utest_t);                {UTEST library use state, returned invalid}
   val_param; extern;
 
 procedure utest_lib_open (             {start a new use of the UTEST library}
@@ -256,14 +261,14 @@ procedure utest_user_msg (             {default message file, no parameters}
   in      msg: string);                {message name within subsystem file}
   val_param; extern;
 
-function utest_user_msg_prmt_wait (    {message, wait for user, defaulf msg file}
+function utest_user_msg_prmt_wait (    {message, wait for user, default msg file}
   in out  ut: utest_t;                 {UTEST library use state}
   in      msg: string;                 {message name within subsystem file}
   in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
   :boolean;                            {TRUE confirmed normally, FALSE skip}
   val_param; extern;
 
-function utest_user_msg_wait (         {message, wait for user, defaulf msg file}
+function utest_user_msg_wait (         {message, wait for user, default msg file}
   in out  ut: utest_t;                 {UTEST library use state}
   in      msg: string)                 {message name within subsystem file}
   :boolean;                            {TRUE confirmed normally, FALSE skip}

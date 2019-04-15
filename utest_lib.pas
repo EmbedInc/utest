@@ -1,9 +1,30 @@
 {   High level UTEST library management.
 }
 module utest_open;
+define utest_lib_init;
 define utest_lib_open;
 define utest_lib_close;
 %include 'utest2.ins.pas';
+{
+********************************************************************************
+*
+*   Subroutine UTEST_LIB_INIT (UT)
+*
+*   Set the UTEST library use state UT to valid, but do not open a connection to
+*   a PIC programmer.  This allows using UTEST calls that do not access the PIC
+*   programmer.
+}
+procedure utest_lib_init (             {make UTEST lib state valid, but don't open}
+  in out  ut: utest_t);                {UTEST library use state, returned invalid}
+  val_param;
+
+begin
+  ut.ibufn := 0;                       {init serial data input buffer to empty}
+  ut.ibufrd := 0;
+  ut.obufn := 0;                       {init serial data output buffer to empty}
+  ut.skipped := 0;                     {init to no tests skipped}
+  ut.open := false;                    {init to no connection to PIC programmer}
+  end;
 {
 ********************************************************************************
 *
@@ -38,6 +59,7 @@ label
   leave, abort1;
 
 begin
+  utest_lib_init (ut);                 {init library state to valid values}
   devs_open := false;                  {init to programmer devices list not allocated}
 {
 *   Find the tester PIC programmer device.  TESTER_P will be pointing to the
@@ -77,16 +99,10 @@ begin
 
   picprg_open (ut.pr, stat);           {open connection to the specified programmer}
   if sys_error(stat) then goto leave;
+  ut.open := true;                     {indicate connection to programmer is open}
 
   picprg_cmdw_off (ut.pr, stat);       {make sure programming lines start high impedance}
   if sys_error(stat) then goto abort1;
-{
-*   Initialize the rest of the UTEST library use state.
-}
-  ut.ibufn := 0;                       {init serial data input buffer to empty}
-  ut.ibufrd := 0;
-  ut.obufn := 0;                       {init serial data output buffer to empty}
-  ut.skipped := 0;                     {init to no tests skipped}
 {
 *   Initialize the tester.
 }
@@ -102,7 +118,10 @@ leave:                                 {common exit point, STAT all set}
 *   Error exit.  STAT is already set.
 }
 abort1:                                {PICPRG open}
-  picprg_close (ut.pr, stat2);
+  if ut.open then begin                {connection to PIC programmer is open ?}
+    picprg_close (ut.pr, stat2);       {close it}
+    ut.open := false;
+    end;
   goto leave;
   end;
 {
@@ -118,6 +137,9 @@ procedure utest_lib_close (            {end a use of the UTEST library}
   val_param;
 
 begin
-  picprg_cmdw_off (ut.pr, stat);       {all programming lines to high impedance}
-  picprg_close (ut.pr, stat);          {end use of the PICPRG library}
+  if ut.open then begin                {connected to PIC programmer ?}
+    picprg_cmdw_off (ut.pr, stat);     {all programming lines to high impedance}
+    picprg_close (ut.pr, stat);        {end use of the PICPRG library}
+    ut.open := false;
+    end;
   end;
