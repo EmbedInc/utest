@@ -32,6 +32,16 @@ begin
 52: string_vstring (name, 'AGPAN'(0), -1);
 53: string_vstring (name, 'CURRT'(0), -1);
 54: string_vstring (name, 'AGCTRL'(0), -1);
+55: string_vstring (name, 'SYNVB'(0), -1);
+56: string_vstring (name, 'SYNVT'(0), -1);
+57: string_vstring (name, 'JCURR'(0), -1);
+58: string_vstring (name, 'MMDSP'(0), -1);
+59: string_vstring (name, 'MMCOM'(0), -1);
+60: string_vstring (name, 'S5CAN'(0), -1);
+61: string_vstring (name, 'RELAY'(0), -1);
+62: string_vstring (name, 'ISCAN'(0), -1);
+63: string_vstring (name, 'S5MAIN'(0), -1);
+64: string_vstring (name, 'S5DIG'(0), -1);
 otherwise
     string_f_int (name, typ);          {make type ID number string}
     end;
