@@ -70,7 +70,7 @@ msg fw_ver_match_nver
     Firmware %p1s is at version %p2i, should be version %p3i.
 msg fw_show
   lan english -def
-    Firmware %p2s ver %p3i seq %p4i (%p1s)
+    %p1s firmware is %p2s ver %p3i seq %p4i.
 msg fw_show_unk
   lan english -def
     Firmware unknown (%p1s)
