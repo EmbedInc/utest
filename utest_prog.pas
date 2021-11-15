@@ -78,11 +78,13 @@ begin
   string_appends (fnam, fwname);       {make generic HEX file name}
   ii := fnam.len;                      {save length to just before version number}
   string_append (fnam, tk);            {add version number string}
+
   ihex_in_open_fnam (fnam, '.hex', ihn, stat); {try to open HEX file with version}
-  if file_not_found(stat) then begin   {version HEX file doesn't exist}
+  stat2 := stat;                       {make corruptable copy of original status}
+  if file_not_found(stat2) then begin  {version HEX file doesn't exist}
     fnam.len := ii;                    {make HEX file name without version number}
     ihex_in_open_fnam (fnam, '.hex', ihn, stat2); {try to open HEX file without version}
-    if file_not_found(stat) then return; {return with original not found error}
+    if file_not_found(stat2) then return; {return with original not found error}
     stat := stat2;                     {return with error opening non-version file}
     end;
   if sys_error(stat) then return;
