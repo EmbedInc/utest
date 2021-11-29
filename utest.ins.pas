@@ -1,4 +1,8 @@
 {   Public include file for the UTEST library.
+*
+*   This library provides a precedural interface for a production tester based
+*   on an Embed Inc USBProg PIC programmer.  It also includes other functions
+*   useful for implementing production testers.
 }
 const
 {
@@ -113,6 +117,12 @@ procedure utest_lib_init (             {make UTEST lib state valid, but don't op
 procedure utest_lib_open (             {start a new use of the UTEST library}
   in      name: univ string_var_arg_t; {name of the USBProg in the tester}
   out     ut: utest_t;                 {returned library use state}
+  out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure utest_pic_get (              {get name of PIC model connected to programmer}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in out  name: univ string_var_arg_t; {returned PIC model name, upper case}
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
