@@ -1,10 +1,28 @@
 {   Routines that deal with firmware issues in the unit under test.
 }
 module utest_fw;
+define utest_fw_init;
 define utest_fw_name;
 define utest_fw_show;
 define utest_fw_ver;
 %include 'utest2.ins.pas';
+{
+********************************************************************************
+*
+*   Subroutine UTEST_FW_INIT (FW)
+*
+*   Initialize the firmware information descriptor FW to indicate that the
+*   firmware information is unknown.
+}
+procedure utest_fw_init (              {init FW info to unknown}
+  out     fw: utest_fw_t);             {firmware info descriptor to initialize}
+  val_param;
+
+begin
+  fw.typ := 0;
+  fw.ver := 0;
+  fw.seq := 0;
+  end;
 {
 ********************************************************************************
 *
@@ -21,7 +39,44 @@ procedure utest_fw_name (              {make firmware name from type ID}
 begin
   case typ of
 0: string_vstring (name, 'unknown'(0), -1);
+6: string_vstring (name, 'TAURUS'(0), -1);
+7: string_vstring (name, 'TTRECV'(0), -1);
+8: string_vstring (name, 'TTCOM'(0), -1);
+9: string_vstring (name, 'EBHV'(0), -1);
+10: string_vstring (name, 'EBCT'(0), -1);
+11: string_vstring (name, 'R1LIT'(0), -1);
+12: string_vstring (name, 'EMCPS'(0), -1);
+13: string_vstring (name, 'COPB'(0), -1);
+14: string_vstring (name, 'OCCD'(0), -1);
+15: string_vstring (name, 'SHIPM'(0), -1);
+16: string_vstring (name, 'HANSIM'(0), -1);
+17: string_vstring (name, 'OCCB'(0), -1);
+18: string_vstring (name, 'HALLT'(0), -1);
+19: string_vstring (name, 'TAGLCD'(0), -1);
+20: string_vstring (name, 'VOYAG'(0), -1);
+21: string_vstring (name, 'MINIX'(0), -1);
+22: string_vstring (name, 'CPAP'(0), -1);
+23: string_vstring (name, 'DUMET'(0), -1);
+24: string_vstring (name, 'DUMSOL'(0), -1);
+25: string_vstring (name, 'DUMCAN'(0), -1);
+26: string_vstring (name, 'DUMSND'(0), -1);
+27: string_vstring (name, 'BLDC'(0), -1);
+28: string_vstring (name, 'DUMOT'(0), -1);
+29: string_vstring (name, 'MORBET'(0), -1);
+30: string_vstring (name, 'MORB'(0), -1);
+31: string_vstring (name, 'MBDCC'(0), -1);
+33: string_vstring (name, 'DUMAUD'(0), -1);
+34: string_vstring (name, 'DCCPWR'(0), -1);
+35: string_vstring (name, 'H2SNODE'(0), -1);
+36: string_vstring (name, 'H2SBASE'(0), -1);
+37: string_vstring (name, 'CO2PWR'(0), -1);
+38: string_vstring (name, 'MENG'(0), -1);
+39: string_vstring (name, 'DSNIF'(0), -1);
+40: string_vstring (name, 'MB2SOL'(0), -1);
+41: string_vstring (name, 'MB2SOLP'(0), -1);
+42: string_vstring (name, 'G1S'(0), -1);
 43: string_vstring (name, 'PBPTEST'(0), -1);
+44: string_vstring (name, 'MB1DIOT'(0), -1);
 45: string_vstring (name, 'JDSP'(0), -1);
 46: string_vstring (name, 'JMTM'(0), -1);
 47: string_vstring (name, 'AGSTP'(0), -1);
@@ -42,6 +97,14 @@ begin
 62: string_vstring (name, 'ISCAN'(0), -1);
 63: string_vstring (name, 'S5MAIN'(0), -1);
 64: string_vstring (name, 'S5DIG'(0), -1);
+65: string_vstring (name, 'USBSER'(0), -1);
+66: string_vstring (name, 'G1OGG'(0), -1);
+67: string_vstring (name, 'CAPLEV'(0), -1);
+68: string_vstring (name, 'HLEAR'(0), -1);
+69: string_vstring (name, 'CMUXM'(0), -1);
+70: string_vstring (name, 'CMUXI'(0), -1);
+71: string_vstring (name, 'DB25'(0), -1);
+72: string_vstring (name, 'RESCAL'(0), -1);
 otherwise
     string_f_int (name, typ);          {make type ID number string}
     end;

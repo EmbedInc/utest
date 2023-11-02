@@ -88,6 +88,10 @@ function utest_check_percent (         {check that value is within +-percent}
   :boolean;                            {value is in range}
   val_param; extern;
 
+procedure utest_fw_init (              {init FW info to unknown}
+  out     fw: utest_fw_t);             {firmware info descriptor to initialize}
+  val_param; extern;
+
 procedure utest_fw_name (              {make firmware name from type ID}
   in      typ: sys_int_machine_t;      {firmware type ID}
   in out  name: univ string_var_arg_t); {returned name, number string if type not known}
