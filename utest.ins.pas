@@ -44,71 +44,8 @@ type
 {
 ********************************************************************************
 *
-*   Entry points.
+*   Routines that access the tester.  These require a current library use state.
 }
-procedure utest_announce (             {write program info to standard output}
-  in      dtm: string);                {program build date/time string}
-  val_param; extern;
-
-function utest_check_above (           {check for value at or above some level}
-  in      name: string;                {name of the value, for message}
-  in      val: real;                   {the value to test}
-  in      lev: real)                   {minimum valid value}
-  :boolean;                            {value is in range}
-  val_param; extern;
-
-function utest_check_below (           {check for value at or below some level}
-  in      name: string;                {name of the value, for message}
-  in      val: real;                   {the value to test}
-  in      lev: real)                   {maximum valid value}
-  :boolean;                            {value is in range}
-  val_param; extern;
-
-function utest_check_delta (           {check that value is within +-error}
-  in      name: string;                {name of the value, for message}
-  in      val: real;                   {value to check}
-  in      nom: real;                   {nominal value (0% error)}
-  in      delta: real)                 {max allowed deviation from nominal}
-  :boolean;                            {value is in range}
-  val_param; extern;
-
-function utest_check_lim (             {check that value is within specific limits}
-  in      name: string;                {name of the value, for message}
-  in      val: real;                   {value to check}
-  in      limlo: real;                 {minimum allowed value}
-  in      limhi: real)                 {maximum allowed value}
-  :boolean;                            {value is in range}
-  val_param; extern;
-
-function utest_check_percent (         {check that value is within +-percent}
-  in      name: string;                {name of the value, for message}
-  in      val: real;                   {value to check}
-  in      nom: real;                   {nominal value (0% error)}
-  in      pcent: real)                 {max allowed percent error from nominal}
-  :boolean;                            {value is in range}
-  val_param; extern;
-
-procedure utest_fw_init (              {init FW info to unknown}
-  out     fw: utest_fw_t);             {firmware info descriptor to initialize}
-  val_param; extern;
-
-procedure utest_fw_name (              {make firmware name from type ID}
-  in      typ: sys_int_machine_t;      {firmware type ID}
-  in out  name: univ string_var_arg_t); {returned name, number string if type not known}
-  val_param; extern;
-
-procedure utest_fw_show (              {show information about one firmware}
-  in      desc: string;                {short description}
-  in      fw: utest_fw_t);             {firmware version info}
-  val_param; extern;
-
-function utest_fw_ver (                {check firmware version, show result}
-  in      fw: utest_fw_t;              {actual firmware info}
-  in      typ: sys_int_machine_t;      {desired type}
-  in      ver: sys_int_machine_t)      {desired version}
-  :boolean;                            {firmware version is correct}
-  val_param; extern;
-
 procedure utest_lib_close (            {end a use of the UTEST library}
   in out  ut: utest_t;                 {UTEST library use state, returned invalid}
   out     stat: sys_err_t);            {completion status}
@@ -220,12 +157,107 @@ procedure utest_ser_send32 (           {send 32 bits serial, buffer as much as p
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
+function utest_user_message_prmt_wait ( {write message, wait for user to hit ENTER}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      msg: string;                 {message name within subsystem file}
+  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
+  in      nparms: sys_int_machine_t;   {number of parameters in PARMS}
+  in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param; extern;
+
+function utest_user_message_wait (     {write message, wait for user to hit ENTER}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      msg: string;                 {message name within subsystem file}
+  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
+  in      nparms: sys_int_machine_t)   {number of parameters in PARMS}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param; extern;
+
+procedure utest_wait (                 {wait a minimum time, performed in programmer}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      sec: real);                  {seconds to wait}
+  val_param; extern;
+{
+********************************************************************************
+*
+*   General utility routines that are independent of the tester.  These do not
+*   access a UTEST library use state, and the library does not need to be open.
+}
+procedure utest_announce (             {write program info to standard output}
+  in      dtm: string);                {program build date/time string}
+  val_param; extern;
+
+function utest_check_above (           {check for value at or above some level}
+  in      name: string;                {name of the value, for message}
+  in      val: real;                   {the value to test}
+  in      lev: real)                   {minimum valid value}
+  :boolean;                            {value is in range}
+  val_param; extern;
+
+function utest_check_below (           {check for value at or below some level}
+  in      name: string;                {name of the value, for message}
+  in      val: real;                   {the value to test}
+  in      lev: real)                   {maximum valid value}
+  :boolean;                            {value is in range}
+  val_param; extern;
+
+function utest_check_delta (           {check that value is within +-error}
+  in      name: string;                {name of the value, for message}
+  in      val: real;                   {value to check}
+  in      nom: real;                   {nominal value (0% error)}
+  in      delta: real)                 {max allowed deviation from nominal}
+  :boolean;                            {value is in range}
+  val_param; extern;
+
+function utest_check_lim (             {check that value is within specific limits}
+  in      name: string;                {name of the value, for message}
+  in      val: real;                   {value to check}
+  in      limlo: real;                 {minimum allowed value}
+  in      limhi: real)                 {maximum allowed value}
+  :boolean;                            {value is in range}
+  val_param; extern;
+
+function utest_check_percent (         {check that value is within +-percent}
+  in      name: string;                {name of the value, for message}
+  in      val: real;                   {value to check}
+  in      nom: real;                   {nominal value (0% error)}
+  in      pcent: real)                 {max allowed percent error from nominal}
+  :boolean;                            {value is in range}
+  val_param; extern;
+
+procedure utest_fw_init (              {init FW info to unknown}
+  out     fw: utest_fw_t);             {firmware info descriptor to initialize}
+  val_param; extern;
+
+procedure utest_fw_name (              {make firmware name from type ID}
+  in      typ: sys_int_machine_t;      {firmware type ID}
+  in out  name: univ string_var_arg_t); {returned name, number string if type not known}
+  val_param; extern;
+
+procedure utest_fw_show (              {show information about one firmware}
+  in      desc: string;                {short description}
+  in      fw: utest_fw_t);             {firmware version info}
+  val_param; extern;
+
+function utest_fw_ver (                {check firmware version, show result}
+  in      fw: utest_fw_t;              {actual firmware info}
+  in      typ: sys_int_machine_t;      {desired type}
+  in      ver: sys_int_machine_t)      {desired version}
+  :boolean;                            {firmware version is correct}
+  val_param; extern;
+
 procedure utest_user_make_prompt (     {make prompt string from msg references}
   in      subsys: string;              {name of subsystem, used to find message file}
   in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
   in out  prompt: univ string_var_arg_t); {returned prompts string}
   val_param; extern;
-
+{
+*   Routines that write messages to the user from a full message reference and
+*   parameters.  The messages are specified with SUBSYS, MSG, PARMS, and NPARMS.
+}
 procedure utest_user_message (         {write separator, message, beep}
   in      subsys: string;              {name of subsystem, used to find message file}
   in      msg: string;                 {message name within subsystem file}
@@ -243,16 +275,6 @@ procedure utest_user_message_keyw (    {write message, get response keyword}
   out     pick: sys_int_machine_t);    {1-N number of chosen keyword}
   val_param; extern;
 
-function utest_user_message_prmt_wait ( {write message, wait for user to hit ENTER}
-  in out  ut: utest_t;                 {UTEST library use state}
-  in      subsys: string;              {name of subsystem, used to find message file}
-  in      msg: string;                 {message name within subsystem file}
-  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
-  in      nparms: sys_int_machine_t;   {number of parameters in PARMS}
-  in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
-  :boolean;                            {TRUE confirmed normally, FALSE skip}
-  val_param; extern;
-
 procedure utest_user_message_resp (    {message, prompt, get response}
   in      subsys: string;              {name of subsystem, used to find message file}
   in      msg: string;                 {message name within subsystem file}
@@ -261,16 +283,10 @@ procedure utest_user_message_resp (    {message, prompt, get response}
   in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
   in out  resp: univ string_var_arg_t); {returned response from the user}
   val_param; extern;
-
-function utest_user_message_wait (     {write message, wait for user to hit ENTER}
-  in out  ut: utest_t;                 {UTEST library use state}
-  in      subsys: string;              {name of subsystem, used to find message file}
-  in      msg: string;                 {message name within subsystem file}
-  in      parms: univ sys_parm_msg_ar_t; {array of parameter descriptors}
-  in      nparms: sys_int_machine_t)   {number of parameters in PARMS}
-  :boolean;                            {TRUE confirmed normally, FALSE skip}
-  val_param; extern;
-
+{
+*   Shortcut message routines.  These can be used when the message takes no
+*   parameters and the message is from the message file unique to the program.
+}
 procedure utest_user_msg (             {default message file, no parameters}
   in      msg: string);                {message name within subsystem file}
   val_param; extern;
@@ -307,9 +323,4 @@ procedure utest_user_prompt_resp (     {write prompt, get response string}
   in      subsys: string;              {name of subsystem, used to find message file}
   in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
   in out  resp: univ string_var_arg_t); {returned response from the user}
-  val_param; extern;
-
-procedure utest_wait (                 {wait a minimum time, performed in programmer}
-  in out  ut: utest_t;                 {UTEST library use state}
-  in      sec: real);                  {seconds to wait}
   val_param; extern;
