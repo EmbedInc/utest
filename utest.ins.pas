@@ -176,6 +176,19 @@ function utest_user_message_wait (     {write message, wait for user to hit ENTE
   :boolean;                            {TRUE confirmed normally, FALSE skip}
   val_param; extern;
 
+function utest_user_msg_prmt_wait (    {message, wait for user, default msg file}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      msg: string;                 {message name within subsystem file}
+  in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param; extern;
+
+function utest_user_msg_wait (         {message, wait for user, default msg file}
+  in out  ut: utest_t;                 {UTEST library use state}
+  in      msg: string)                 {message name within subsystem file}
+  :boolean;                            {TRUE confirmed normally, FALSE skip}
+  val_param; extern;
+
 procedure utest_wait (                 {wait a minimum time, performed in programmer}
   in out  ut: utest_t;                 {UTEST library use state}
   in      sec: real);                  {seconds to wait}
@@ -289,19 +302,6 @@ procedure utest_user_message_resp (    {message, prompt, get response}
 }
 procedure utest_user_msg (             {default message file, no parameters}
   in      msg: string);                {message name within subsystem file}
-  val_param; extern;
-
-function utest_user_msg_prmt_wait (    {message, wait for user, default msg file}
-  in out  ut: utest_t;                 {UTEST library use state}
-  in      msg: string;                 {message name within subsystem file}
-  in      prmsg: string)               {prompt msg ref, [subsys] name, def "Done> "}
-  :boolean;                            {TRUE confirmed normally, FALSE skip}
-  val_param; extern;
-
-function utest_user_msg_wait (         {message, wait for user, default msg file}
-  in out  ut: utest_t;                 {UTEST library use state}
-  in      msg: string)                 {message name within subsystem file}
-  :boolean;                            {TRUE confirmed normally, FALSE skip}
   val_param; extern;
 
 function utest_user_msg_yes_y (        {message, get yes/no response, default yes}

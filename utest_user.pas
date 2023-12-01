@@ -284,8 +284,8 @@ otherwise
 *   Write the indicated message, then prompt the user to hit ENTER when done.
 *   This routine does not return until the user hits ENTER.
 *
-*   PRMSG specifies the the prompt by referencing a message.  The the
-*   description of subroutine UTEST_USER_MAKE_PROMPT for details of PRMSG.
+*   PRMSG specifies the the prompt by referencing a message.  The description of
+*   subroutine UTEST_USER_MAKE_PROMPT for details of PRMSG.
 *
 *   This routine allows additional "hidden" responses instead of just ENTER (the
 *   empty string):
