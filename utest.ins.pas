@@ -262,6 +262,9 @@ function utest_fw_ver (                {check firmware version, show result}
   :boolean;                            {firmware version is correct}
   val_param; extern;
 
+procedure utest_user_beep;             {beep to alert user to new message}
+  val_param; extern;
+
 procedure utest_user_make_prompt (     {make prompt string from msg references}
   in      subsys: string;              {name of subsystem, used to find message file}
   in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
@@ -322,5 +325,12 @@ function utest_user_msg_yes (          {message, get yes/no response, no default
 procedure utest_user_prompt_resp (     {write prompt, get response string}
   in      subsys: string;              {name of subsystem, used to find message file}
   in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
+  in out  resp: univ string_var_arg_t); {returned response from the user}
+  val_param; extern;
+
+procedure utest_user_prompt_resp_beep ( {prompt, optional beep, get response string}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
+  in      beep: boolean;               {beep after writing prompt}
   in out  resp: univ string_var_arg_t); {returned response from the user}
   val_param; extern;

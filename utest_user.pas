@@ -1,8 +1,10 @@
 {   Routines that interact with the user.
 }
 module utest_user;
+define utest_user_beep;
 define utest_user_message;
 define utest_user_make_prompt;
+define utest_user_prompt_resp_beep;
 define utest_user_prompt_resp;
 define utest_user_message_resp;
 define utest_user_message_keyw;
@@ -15,6 +17,23 @@ define utest_user_msg_yes;
 define utest_user_msg_yes_y;
 define utest_user_msg_yes_n;
 %include 'utest2.ins.pas';
+{
+********************************************************************************
+*
+*   Subroutine UTEST_USER_BEEP
+*
+*   Emit a beep to alert the user to something on the screen that he needs to
+*   look at or respond to.
+}
+procedure utest_user_beep;             {beep to alert user to new message}
+  val_param;
+
+begin
+  sys_beep (                           {emit the beep}
+    0.5,                               {beep tone duration, seconds}
+    0.0,                               {wait time between successive beeps, seconds}
+    1);                                {number of individual beeps}
+  end;
 {
 ********************************************************************************
 *
@@ -42,7 +61,7 @@ begin
   writeln;
   writeln;
   sys_message_parms (subsys, msg, parms, nparms); {write the message}
-  sys_beep (0.5, 0.0, 1);              {beep to alert to prompt}
+  utest_user_beep;                     {beep to alert to prompt}
   end;
 {
 ********************************************************************************
@@ -77,65 +96,76 @@ procedure utest_user_make_prompt (     {make prompt string from msg references}
   val_param;
 
 var
-  vprmsg: string_var80_t;              {var string PRMSG}
   psubsys: string_var80_t;             {prompt message subsystem name}
   pmsg: string_var80_t;                {prompt message name within subsystem}
-  p: string_index_t;                   {PRMSG parse index}
-  tk: string_var80_t;                  {scratch token}
-  def: boolean;                        {use default prompt}
-  stat: sys_err_t;
 
 begin
-  vprmsg.max := size_char(vprmsg.str); {init local var strings}
-  psubsys.max := size_char(psubsys.str);
+  psubsys.max := size_char(psubsys.str); {init local var strings}
   pmsg.max := size_char(pmsg.str);
-  tk.max := size_char(tk.str);
-{
-*   Determine the message subsystem and name in PSUBSYS and PMSG, or set DEF to
-*   indicate to use the default prompt.
-}
-  string_vstring (                     {make var string PRMSG in VPRMSG}
-    vprmsg, prmsg, size_char(prmsg));
-  p := 1;                              {init parse index}
-  def := true;                         {init to use default prompt}
 
-  while true do begin                  {try to get prompt message subsys and name}
-    string_token (vprmsg, p, psubsys, stat); {get first token into PSUBSYS}
-    if sys_error(stat) then exit;      {abort ?}
-    string_token (vprmsg, p, pmsg, stat); {get second token into PMSG}
-    if string_eos(stat) then begin     {only one token ?}
-      string_copy (psubsys, pmsg);     {the only token is the message name}
-      string_vstring (                 {subsystem name comes from SUBSYS}
-        psubsys, subsys, size_char(subsys));
-      def := false;                    {indicate to use PSUBSYS and PMSG}
-      exit;
-      end;
-    if sys_error(stat) then exit;      {hard error getting second token ?}
-    string_token (vprmsg, p, tk, stat); {try to get another token}
-    if not string_eos(stat) then exit; {not end of string as expected ?}
-    def := false;                      {indicate to use PSUBSYS and PMSG}
-    exit;
-    end;
-{
-*   Resolve the final prompt.
-}
-  if def
-    then begin                         {use default prompt}
+  sys_message_resolve (                {try to resolve subsystem and message names}
+    subsys, prmsg, psubsys, pmsg);
+
+  if pmsg.len <= 0
+    then begin                         {no message name supplied, use default ?}
       string_vstring (prompt, 'Done> '(0), -1);
       end
-    else begin                         {PSUBSYS and PMSG indicate prompt message}
+    else begin
       string_terminate_null (psubsys); {make sure string bodies are null-terminated}
       string_terminate_null (pmsg);
       string_f_message (prompt,        {expand prompt message into PROMPT}
         psubsys.str, pmsg.str, nil, 0);
       if
-          (prompt.len > 0) and         {prompt is not the empty string ?}
+          (prompt.len > 0) and then    {prompt is not the empty string ?}
           (prompt.str[prompt.len] <> ' ') {doesn't already end in blank ?}
           then begin
         string_append1 (prompt, ' ');  {add blank to separate prompt from user resp}
         end;
       end
     ;
+  end;
+{
+********************************************************************************
+*
+*   Subroutine UTEST_USER_PROMPT_RESP_BEEP (SUBSYS, PRMSG, RESP)
+*
+*   Prompt the user with the string defined by SUBSYS and PRMSG, then return the
+*   response in RESP.  See the comments for UTEST_USER_MAKE_PROMPT (above) for
+*   a description of SUBSYS and PRMSG.
+*
+*   When BEEP is TRUE, a beep is emitted after writing the prompt.
+*
+*   RESP is returned what the user entered in response to the prompt.  Trailing
+*   blanks, if any, are stripped.
+}
+procedure utest_user_prompt_resp_beep ( {prompt, optional beep, get response string}
+  in      subsys: string;              {name of subsystem, used to find message file}
+  in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
+  in      beep: boolean;               {beep after writing prompt}
+  in out  resp: univ string_var_arg_t); {returned response from the user}
+  val_param;
+
+var
+  prompt: string_var80_t;              {prompt string}
+
+begin
+  prompt.max := size_char(prompt.str); {init local var strings}
+
+  utest_user_make_prompt (             {get the prompt string into PROMPT}
+    subsys, prmsg, prompt);
+
+  writeln;
+  string_prompt (prompt);              {write the prompt}
+
+  if beep then begin
+    utest_user_beep;                   {alert user to the prompt}
+    end;
+
+  string_readin (resp);                {get the string entered by the user}
+  string_unpad (resp);                 {remove any trailing blanks}
+
+  writeln;
+  writeln;
   end;
 {
 ********************************************************************************
@@ -155,23 +185,8 @@ procedure utest_user_prompt_resp (     {write prompt, get response string}
   in out  resp: univ string_var_arg_t); {returned response from the user}
   val_param;
 
-var
-  prompt: string_var80_t;              {prompt string}
-
 begin
-  prompt.max := size_char(prompt.str); {init local var strings}
-
-  utest_user_make_prompt (             {get the prompt string into PROMPT}
-    subsys, prmsg, prompt);
-
-  writeln;
-  string_prompt (prompt);              {write the prompt}
-
-  string_readin (resp);                {get the string entered by the user}
-  string_unpad (resp);                 {remove any trailing blanks}
-
-  writeln;
-  writeln;
+  utest_user_prompt_resp_beep (subsys, prmsg, false, resp);
   end;
 {
 ********************************************************************************
@@ -260,7 +275,7 @@ otherwise
       sys_message ('utest', 'try3done'); {subsequent bad response messages}
       end;
     if try <> 1 then begin             {not the first attempt ?}
-      sys_beep (0.5, 0.0, 1);          {beep to alert to new prompt}
+      utest_user_beep;                 {beep to alert to new prompt}
       end;
 
     utest_user_prompt_resp (           {prompt the user and get the response}
