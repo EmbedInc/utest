@@ -14,6 +14,13 @@ msg err3
 /*
 /*   Messages referenced by name.
 /*
+msg check_bits_err
+  lan english -def
+    FAILED: %p1s are %p2s, expected %p3s
+msg check_bits_ok
+  lan english -def
+    Passed: %p1s are %p2s
+
 msg check_delta_err
   lan english -def
     FAILED: %p1s, must be within %p3f6.2 of %p2f6.2, is off by %p4f6.2

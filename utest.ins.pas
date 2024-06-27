@@ -217,6 +217,14 @@ function utest_check_below (           {check for value at or below some level}
   :boolean;                            {value is in range}
   val_param; extern;
 
+function utest_check_bits (            {check that bits are set to specified value}
+  in      name: string;                {name of the value, for message}
+  in      val: sys_int_conv32_t;       {the bits to check}
+  in      ref: sys_int_conv32_t;       {correct bit values}
+  in      mask: sys_int_conv32_t)      {mask of used bits in VAL and REF}
+  :boolean;                            {all bits correct}
+  val_param; extern;
+
 function utest_check_delta (           {check that value is within +-error}
   in      name: string;                {name of the value, for message}
   in      val: real;                   {value to check}

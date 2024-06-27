@@ -7,6 +7,40 @@ define utest_check_below;
 define utest_check_delta;
 define utest_check_lim;
 define utest_check_percent;
+define utest_check_bits;
+{
+********************************************************************************
+*
+*   Local subroutine BITS_STR (BITS, MASK, STR)
+*
+*   Make the string of the binary representation of the bits in BITS that have
+*   the associated bits in MASK set.  A "0" or "1" digit is written for each
+*   bit with its MASK bit set.  Nothing is written for a bit when its MASK bit
+*   is 0.
+}
+procedure bits_str (                   {make binary bits string}
+  in      bits: sys_int_conv32_t;      {the input bits}
+  in      mask: sys_int_conv32_t;      {mask of valid bits in BITS}
+  in out  str: univ string_var_arg_t); {returned string}
+  val_param; internal;
+
+var
+  bit: sys_int_machine_t;              {0-31 number of current bit}
+  m: sys_int_conv32_t;                 {mask for the current bit}
+  dig: char;                           {digit to write for the current bit}
+
+begin
+  str.len := 0;                        {init the returned string to empty}
+
+  for bit := 31 downto 0 do begin      {once for each bit, MSB to LSB order}
+    m := lshft(1, bit);                {make mask for this bit}
+    if (m & mask) = 0 then next;       {this bit is not used, ignore ?}
+    if (m & bits) = 0
+      then dig := '0'
+      else dig := '1';
+    string_append1 (str, dig);         {add this digit to end of output string}
+    end;                               {back for next bit}
+  end;
 {
 ********************************************************************************
 *
@@ -231,6 +265,57 @@ begin
     else begin                         {value is out of range}
       utest_check_percent := false;
       sys_message_parms ('utest', 'check_percent_err', msg_parm, 4);
+      end
+    ;
+  writeln;
+  end;
+{
+********************************************************************************
+*
+*   Function UTEST_CHECK_BITS (NAME, VAL, REF, MASK)
+*
+*   Check that the bits in VAL match the bits in REF.  MASK indicates which bits
+*   in VAL and REF are relevant.  When a MASK bit is 0, the corresponding VAL
+*   bit is not checked, and the bit is not included in any message.
+*
+*   The function returns TRUE when the selected bits in VAL match those in REF.
+*   Otherwise, the function returns FALSE.  A message is emitted in either case.
+}
+function utest_check_bits (            {check that bits are set to specified value}
+  in      name: string;                {name of the value, for message}
+  in      val: sys_int_conv32_t;       {the bits to check}
+  in      ref: sys_int_conv32_t;       {correct bit values}
+  in      mask: sys_int_conv32_t)      {mask of used bits in VAL and REF}
+  :boolean;                            {all bits correct}
+  val_param;
+
+const
+  max_msg_args = 3;                    {max arguments we can pass to a message}
+
+var
+  strval: string_var32_t;              {actual bits string}
+  strexp: string_var32_t;              {expected bits string}
+  msg_parm:                            {references arguments passed to a message}
+    array[1..max_msg_args] of sys_parm_msg_t;
+
+begin
+  strval.max := size_char(strval.str); {init local var strings}
+  strexp.max := size_char(strexp.str);
+
+  bits_str (val, mask, strval);        {make actual value bits string}
+  bits_str (ref, mask, strexp);        {make expected bits string}
+  sys_msg_parm_str (msg_parm[1], name); {1 - name of bits being tested}
+  sys_msg_parm_vstr (msg_parm[2], strval); {2 - actual bit settings}
+  sys_msg_parm_vstr (msg_parm[3], strexp); {3 - expected bit settings}
+
+  if (xor(val, ref) & mask) = 0
+    then begin                         {bits are correct}
+      utest_check_bits := true;        {indicate correct}
+      sys_message_parms ('utest', 'check_bits_ok', msg_parm, 3);
+      end
+    else begin                         {bits are different}
+      utest_check_bits := false;       {indicate error}
+      sys_message_parms ('utest', 'check_bits_err', msg_parm, 3);
       end
     ;
   writeln;
