@@ -249,6 +249,12 @@ function utest_check_percent (         {check that value is within +-percent}
   :boolean;                            {value is in range}
   val_param; extern;
 
+function utest_check_true (            {check that a boolean value is TRUE}
+  in      name: string;                {description of test, for message}
+  in      tf: boolean)                 {value to check, must be TRUE for pass}
+  :boolean;                            {value is correct}
+  val_param; extern;
+
 procedure utest_fw_init (              {init FW info to unknown}
   out     fw: utest_fw_t);             {firmware info descriptor to initialize}
   val_param; extern;

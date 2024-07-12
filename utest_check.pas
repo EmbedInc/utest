@@ -1,13 +1,14 @@
 {   Routines for checking values being within a valid range.
 }
 module utest_check;
-%include 'utest2.ins.pas';
 define utest_check_above;
 define utest_check_below;
 define utest_check_delta;
 define utest_check_lim;
 define utest_check_percent;
 define utest_check_bits;
+define utest_check_true;
+%include 'utest2.ins.pas';
 {
 ********************************************************************************
 *
@@ -316,6 +317,45 @@ begin
     else begin                         {bits are different}
       utest_check_bits := false;       {indicate error}
       sys_message_parms ('utest', 'check_bits_err', msg_parm, 3);
+      end
+    ;
+  writeln;
+  end;
+{
+********************************************************************************
+*
+*   Function UTEST_CHECK_TRUE (NAME, TF)
+*
+*   Check that the boolean value TF is TRUE.  NAME is the name or description of
+*   what is being checked.  NAME is used in the message emitted to the user.
+*
+*   The function returns TRUE if the test passed (TF is TRUE), and false if the
+*   test did not pas (TF is FALSE).
+}
+function utest_check_true (            {check that a boolean value is TRUE}
+  in      name: string;                {description of test, for message}
+  in      tf: boolean)                 {value to check, must be TRUE for pass}
+  :boolean;                            {value is correct}
+  val_param;
+
+const
+  max_msg_args = 1;                    {max arguments we can pass to a message}
+
+var
+  msg_parm:                            {references arguments passed to a message}
+    array[1..max_msg_args] of sys_parm_msg_t;
+
+begin
+  sys_msg_parm_str (msg_parm[1], name); {1 - name of value or test description}
+
+  if tf
+    then begin                         {test passed}
+      utest_check_true := true;        {indicate success}
+      sys_message_parms ('utest', 'check_tf_ok', msg_parm, 1);
+      end
+    else begin
+      utest_check_true := false;       {indicate failure}
+      sys_message_parms ('utest', 'check_tf_err', msg_parm, 1);
       end
     ;
   writeln;
