@@ -52,7 +52,7 @@ procedure utest_lib_close (            {end a use of the UTEST library}
   val_param; extern;
 
 procedure utest_lib_init (             {make UTEST lib state valid, but don't open}
-  in out  ut: utest_t);                {UTEST library use state, returned invalid}
+  in out  ut: utest_t);                {UTEST library use state, returned valid}
   val_param; extern;
 
 procedure utest_lib_open (             {start a new use of the UTEST library}
@@ -347,4 +347,15 @@ procedure utest_user_prompt_resp_beep ( {prompt, optional beep, get response str
   in      prmsg: string;               {prompt msg ref, [subsys] name, def "Done> "}
   in      beep: boolean;               {beep after writing prompt}
   in out  resp: univ string_var_arg_t); {returned response from the user}
+  val_param; extern;
+
+function utest_user_prmt_wait (        {prompt user, wait for ENTER}
+  in      msg: string;                 {ref to message to display before prompt}
+  in      prmsg: string)               {prompt message reference, def "Done> "}
+  :boolean;                            {user wants to continue normally, not exit}
+  val_param; extern;
+
+function utest_user_wait (             {prompt user with "Done> ", wait until ENTER}
+  in      msg: string)                 {ref to message to display before prompt}
+  :boolean;                            {user wants to continue normally, not exit}
   val_param; extern;

@@ -16,6 +16,8 @@ define utest_user_msg_wait;
 define utest_user_msg_yes;
 define utest_user_msg_yes_y;
 define utest_user_msg_yes_n;
+define utest_user_prmt_wait;
+define utest_user_wait;
 %include 'utest2.ins.pas';
 {
 ********************************************************************************
@@ -515,4 +517,52 @@ begin
     'Y YES "" N NO',                   {the value user responses}
     pick);                             {1-N number of user response keyword}
   utest_user_msg_yes_n := pick <= 2;   {TRUE for yes, FALSE for no}
+  end;
+{
+********************************************************************************
+*
+*   Function UTEST_USER_PRMT_WAIT (MSG, PRMSG)
+*
+*   Show the message referenced by MSG to the user, prompt the user with the
+*   message referenced by PRMSG, then wait for the user to hit ENTER.  The
+*   function returns TRUE if the user hit ENTER normally, and FALSE if the user
+*   wants to quit.  Quit is indicated by entering Q or QUIT (case insensitive).
+*
+*   The default prompt is "Done> " when PRMSG is all blanks.
+}
+function utest_user_prmt_wait (        {prompt user, wait for ENTER}
+  in      msg: string;                 {ref to message to display before prompt}
+  in      prmsg: string)               {prompt message reference, def "Done> "}
+  :boolean;                            {user wants to continue normally, not exit}
+  val_param;
+
+var
+  pick: sys_int_machine_t;             {number of keyword picked from list}
+
+begin
+  utest_user_message_keyw (            {write message and prompt, get keyword ID}
+    '', msg, nil, 0,                   {reference to the message to show}
+    prmsg,                             {reference to the prompt string}
+    '"" Q QUIT',                       {list of valid responses}
+    pick);                             {1-N number of keyword entered by user}
+
+  utest_user_prmt_wait := pick = 1;
+  end;
+{
+********************************************************************************
+*
+*   Function UTEST_USER_WAIT (MSG)
+*
+*   Show the message referenced by MSG to the user, prompt the user with
+*   "Done> ", then wait for the user to hit ENTER.  The function returns TRUE if
+*   the user hit ENTER normally, and FALSE if the user wants to quit.  Quit is
+*   indicated by entering Q or QUIT (case insensitive).
+}
+function utest_user_wait (             {prompt user with "Done> ", wait until ENTER}
+  in      msg: string)                 {ref to message to display before prompt}
+  :boolean;                            {user wants to continue normally, not exit}
+  val_param;
+
+begin
+  utest_user_wait := utest_user_prmt_wait (msg, '');
   end;
