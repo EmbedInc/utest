@@ -4,10 +4,10 @@
 /*
 msg err1
   lan english -def
-    Multiple programmers found with name "%p1s".
+    Multiple testers or programmers found with name "%p1s".
 msg err2
   lan english -def
-    Programmer with name "%p1s" was not found.
+    Tester with name "%p1s" was not found.
 msg err3
   lan english -def
     Received %p2i bytes, %p1i were required.
