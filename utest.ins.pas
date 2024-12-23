@@ -69,7 +69,7 @@ procedure utest_pic_get (              {get name of PIC model connected to progr
 
 procedure utest_prog (                 {program data into a target PIC}
   in out  ut: utest_t;                 {UTEST library use state}
-  in      hexdir: string_treename_t;   {directory to look for HEX file in}
+  in      hexdir: univ string_treename_t; {directory to look for HEX file in}
   in      fwname: string;              {bare firmware name, no version or path}
   in      ver: sys_int_machine_t;      {required firmware version}
   in      pic: string;                 {PIC model, like "16LF1786", case-insensitive}
